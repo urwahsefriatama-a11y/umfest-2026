@@ -153,7 +153,8 @@ img{display:block}
 @keyframes doorPulse{0%,100%{box-shadow:0 0 0 0 rgba(217,182,110,.55),0 8px 20px rgba(0,0,0,.4)}50%{box-shadow:0 0 0 10px rgba(217,182,110,0),0 8px 20px rgba(0,0,0,.4)}}
 .arr[hidden]{display:none}
 .arr.on{background:var(--gold);color:#1A0C10}
-@media (orientation:portrait) and (max-width:1100px){#gyro{position:fixed;right:16px;top:calc(132px + env(safe-area-inset-top))}}
+@media (orientation:portrait) and (max-width:1100px){#musBtn,#gyro{position:fixed;right:16px;top:calc(132px + env(safe-area-inset-top))}#gyro{top:calc(186px + env(safe-area-inset-top))}}
+#musBtn .mx{display:none}#musBtn.off .mx{display:inline}#musBtn.off{opacity:.7}
 .pop{position:fixed;inset:0;z-index:60;display:grid;place-items:center;padding:24px;background:rgba(8,3,5,.62);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);opacity:0;transition:opacity .25s}
 .pop[hidden]{display:none}
 .pop.on{opacity:1}
@@ -471,6 +472,7 @@ img{display:block}
   <div class="arrows">
     <button class="arr" type="button" id="prev" aria-label="Bingkai sebelumnya"><svg class="ic" viewBox="0 0 24 24"><path d="M19 12H5M11 6l-6 6 6 6"/></svg></button>
     <button class="arr" type="button" id="next" aria-label="Bingkai berikutnya"><svg class="ic" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+    <button class="arr" type="button" id="musBtn" aria-label="Matikan musik" aria-pressed="true"><svg class="ic" viewBox="0 0 24 24"><path d="M9 18V6l10-2v12"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="16.5" cy="16" r="2.5"/><path class="mx" d="M3 3l18 18"/></svg></button>
     <button class="arr" type="button" id="gyro" aria-label="Nengok pakai gyro HP" aria-pressed="false"><svg class="ic" viewBox="0 0 24 24"><rect x="8" y="3.5" width="8" height="17" rx="1.8"/><path d="M11 17.5h2M3.5 9.5a8.5 8.5 0 0 1 2.2-3.6M5.7 5.9l.2 2.3-2.3.1M20.5 14.5a8.5 8.5 0 0 1-2.2 3.6M18.3 18.1l-.2-2.3 2.3-.1"/></svg></button>
   </div>
   <p class="hint micro"><span class="m"><span id="h1t">Scroll atau geser untuk berjalan</span></span><span class="m"><span id="h2t">Ketuk poster untuk melihat lebih dekat</span></span></p>
@@ -488,6 +490,7 @@ img{display:block}
     <div class="side"><span class="cdw" data-cd></span><button class="go micro" type="button" data-nav="daftar">Lihat semua pameran <span class="go-ar">→</span></button></div>
   </div>
 </div>
+<audio id="bgm" src="bgm.mp3" preload="none" loop></audio>
 <div class="pill micro" id="pill">Buka detail</div>
 <div class="pop" id="pop" hidden>
   <div class="pop-c" role="dialog" aria-modal="true" aria-labelledby="popT">
@@ -1864,6 +1867,28 @@ function closeP(el) { el.classList.remove("on"); setTimeout(() => { if (!el.clas
 jsEl.addEventListener("click", e => { if (e.target === jsEl) closeP(jsEl); });
 $("#jsX").addEventListener("click", () => closeP(jsEl)); $("#jsGo").addEventListener("click", () => setTimeout(() => closeP(jsEl), 150));
 $("#jsRoom").addEventListener("click", () => { closeP(jsEl); setTimeout(() => focusDoor(enterDoor), 250); });
+
+/* ================= MUSIK LATAR (volume 8%) ================= */
+const bgm = $("#bgm"), musBtn = $("#musBtn"), MUS = { on: true, ac: null, gain: null, started: false, VOL: .08 };
+try { MUS.on = localStorage.getItem("umfest-mus") !== "0"; } catch (er) {}
+function musUI() { musBtn.classList.toggle("off", !MUS.on); musBtn.setAttribute("aria-pressed", String(MUS.on)); musBtn.setAttribute("aria-label", MUS.on ? "Matikan musik" : "Nyalakan musik"); }
+musUI();
+function musGraph() {
+  if (MUS.ac) return;
+  const AC = window.AudioContext || window.webkitAudioContext;
+  try { if (!AC) throw 0; MUS.ac = new AC(); const src = MUS.ac.createMediaElementSource(bgm); MUS.gain = MUS.ac.createGain(); MUS.gain.gain.value = 0; src.connect(MUS.gain); MUS.gain.connect(MUS.ac.destination); }
+  catch (er) { MUS.ac = null; MUS.gain = null; bgm.volume = MUS.VOL; }
+}
+function musRamp(to, dur) { if (!MUS.gain) return; const g = MUS.gain.gain, t = MUS.ac.currentTime; g.cancelScheduledValues(t); g.setValueAtTime(g.value, t); g.linearRampToValueAtTime(to, t + dur); }
+function musPlay() {
+  if (!MUS.on || document.hidden) return;
+  musGraph(); if (MUS.ac && MUS.ac.state === "suspended") MUS.ac.resume();
+  const p = bgm.play(); MUS.started = true; musRamp(MUS.VOL, 2.5); if (p && p.catch) p.catch(() => {});
+}
+function musPause() { if (MUS.gain) { musRamp(0, .6); setTimeout(() => { if (!MUS.on || document.hidden) bgm.pause(); }, 650); } else bgm.pause(); }
+["pointerdown", "keydown", "touchstart"].forEach(ev => addEventListener(ev, () => { if (MUS.on && bgm.paused) musPlay(); }, { passive: true }));
+musBtn.addEventListener("click", () => { MUS.on = !MUS.on; try { localStorage.setItem("umfest-mus", MUS.on ? "1" : "0"); } catch (er) {} musUI(); if (MUS.on) musPlay(); else musPause(); });
+document.addEventListener("visibilitychange", () => { if (document.hidden) musPause(); else if (MUS.on && MUS.started) musPlay(); });
 
 /* ================= NOTIFIKASI KREDIT ================= */
 const crEl = $("#crPop");
