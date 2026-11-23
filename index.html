@@ -194,6 +194,19 @@ img{display:block}
 .story{margin-top:24px;max-width:calc(560*var(--w))}
 .story p{margin:0 0 12px;font-size:max(15px,calc(15.5*var(--w)));line-height:1.75;color:rgba(246,233,214,.82)}
 .fakta{margin:16px 0 4px;padding:0;list-style:none;display:grid;gap:8px}
+.pkt-h{margin:26px 0 12px;font-size:10.5px;color:var(--acc)}
+.pkt{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.pk{position:relative;display:flex;flex-direction:column;padding:18px 16px 16px;border-radius:16px;background:rgba(246,233,214,.04);border:1px solid rgba(246,233,214,.12)}
+.pk.best{border-color:var(--acc);background:linear-gradient(180deg,rgba(246,233,214,.07),rgba(246,233,214,.02))}
+.pk-b{position:absolute;top:-10px;left:14px;right:14px;padding:4px 8px;border-radius:99px;background:var(--acc);color:#140805;font-size:9px;line-height:1.3;text-align:center}
+.pk-n{margin:0;font-size:12px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-60)}
+.pk-p{margin:4px 0 0;font-family:var(--serif);font-size:26px;font-weight:800;line-height:1.1}
+.pk .fakta{margin-top:12px;gap:6px}
+.pk .fakta li{font-size:13px}
+.pk-bonus{margin-top:14px;padding:14px 16px;border-radius:14px;border:1px dashed var(--acc);background:rgba(246,233,214,.03)}
+.pk-bonus b{display:block;font-size:13px;color:var(--acc)}
+.pk-bonus p{margin:4px 0 0;font-size:14px;line-height:1.55}
+@media (max-width:819px){.pkt{grid-template-columns:1fr;gap:16px}}
 .fakta li{position:relative;padding-left:22px;font-size:14px;line-height:1.5;color:var(--ink)}
 .fakta li::before{content:"";position:absolute;left:2px;top:.55em;width:9px;height:9px;transform:rotate(45deg);border:1.5px solid var(--acc)}
 .chipsI{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
@@ -789,11 +802,16 @@ sponsor("rj", "RJ Tour", "Riyadhuljannah", null, { art: ["suitcase", "plane"], t
   story: ["Riyadhuljannah — RJ Tour — turut mendukung UM-Fest 2.0.", "Terima kasih atas dukungannya untuk kegiatan santri dan walisantri Ma'had Tahfizh Ummahatul Mu'minin."],
   fact: "Perjalanan haji dari Nusantara sudah berlangsung berabad-abad. Dahulu jamaah menempuhnya berbulan-bulan dengan kapal laut." });
 meja(7);
-add({ type: "sorot", slug: "cek-kesehatan", title: "Cek Kesehatan", short: "Cek Kesehatan", tagline: "Sayangi diri, cek dulu sebelum jajan.", sub: "Booth tim akupuntur Ma'had", kick: "Sorotan acara", cat: "SOROTAN ACARA · BOOTH KESEHATAN", l2: "Sorotan Acara", th: 7, art: ["stetho", "heart"],
-  billing: "TIM AKUPUNTUR MA'HAD · CEK TENSI · TIMBANG BADAN · KOLESTEROL · GULA DARAH · ASAM URAT",
-  story: ["Sebelum berburu jajanan, mampir dulu ke booth cek kesehatan dari tim akupuntur Ma'had.", "Tersedia cek tensi, timbang badan, dan cek darah seketika untuk kolesterol, gula darah, serta asam urat."],
+add({ type: "sorot", slug: "cek-kesehatan", title: "Cek Kesehatan", short: "Cek Kesehatan", tagline: "Sehat itu nikmat, menjaganya adalah bentuk syukur.", sub: "Untuk ikhwan & akhwat · kuota 20 orang", kick: "Sorotan acara", cat: "SOROTAN ACARA · BOOTH KESEHATAN", l2: "Paket mulai Rp25.000", th: 7, art: ["stetho", "heart"],
+  billing: "IKHWAN & AKHWAT · PAKET A & B RP25.000 · PAKET C RP45.000 · BONUS AKUPUNKTUR · KUOTA 20 ORANG",
+  story: ["Yuk, manfaatkan kesempatan mengecek kondisi kesehatan di UM-Fest 2.0. Layanan ini terbuka untuk ikhwan dan akhwat, dengan pilihan paket pemeriksaan yang terjangkau.", "Kuotanya terbatas, hanya untuk 20 orang. Segera daftarkan diri sebelum kuota terpenuhi, dan luangkan waktu untuk lebih peduli pada kesehatan diri serta keluarga."],
+  paket: [
+    { n: "Paket A", p: "Rp25.000", i: ["Cek tekanan darah (tensi)", "Timbang berat badan", "Cek kolesterol"] },
+    { n: "Paket B", p: "Rp25.000", i: ["Cek tekanan darah (tensi)", "Timbang berat badan", "Cek gula darah", "Cek asam urat"] },
+    { n: "Paket C", p: "Rp45.000", i: ["Cek tekanan darah (tensi)", "Timbang berat badan", "Cek kolesterol", "Cek gula darah", "Cek asam urat"], b: "Bonus akupunktur" }],
+  bonus: "Khusus peserta akhwat yang memilih Paket C (Rp45.000), ada bonus gratis layanan akupunktur pada titik tertentu.",
   fact: "Orang Sunda punya tradisi botram: makan bersama beralaskan daun pisang. Hidangannya sederhana, kebersamaannya yang utama.",
-  chips: [["Tempat", "Area UM-Fest 2.0"]], acc: ["lokasi"], group: "Sorotan Acara" });
+  chips: [["Paket", "Rp25.000–45.000"], ["Kuota", "20 orang"], ["Untuk", "Ikhwan & akhwat"], ["Tempat", "Area UM-Fest 2.0"]], acc: ["lokasi", "kontak"], group: "Sorotan Acara" });
 meja(8);
 budaya("sangkuriang", "Sangkuriang", "Legenda di balik Tangkuban Parahu", "Bandung Barat",
   ["Legenda Sangkuriang bercerita tentang pemuda sakti yang jatuh cinta pada Dayang Sumbi, tanpa tahu bahwa ia ibunya sendiri. Untuk menolak, Dayang Sumbi meminta danau dan perahu besar selesai dalam satu malam.", "Saat usahanya digagalkan fajar yang datang lebih cepat, Sangkuriang menendang perahu itu hingga tertelungkup — dan menjadi Gunung Tangkuban Parahu, yang berarti perahu terbalik."],
@@ -1261,7 +1279,9 @@ function renderPage(i) {
   page.style.setProperty("--acc", it.col[2]);
   $("#pgK").textContent = it.kick; $("#pgT").textContent = it.title;
   const s = $("#pgS"); s.textContent = it.sub; s.dir = /[؀-ۿ]/.test(it.sub) ? "rtl" : ""; s.style.textAlign = s.dir ? "left" : "";
-  $("#pgStory").innerHTML = it.story.map(p => `<p>${esc(p)}</p>`).join("") + (it.list ? `<ul class="fakta">${it.list.map(x => `<li>${esc(x)}</li>`).join("")}</ul>` : "");
+  $("#pgStory").innerHTML = it.story.map(p => `<p>${esc(p)}</p>`).join("") + (it.list ? `<ul class="fakta">${it.list.map(x => `<li>${esc(x)}</li>`).join("")}</ul>` : "")
+    + (it.paket ? `<p class="pkt-h micro">Pilihan paket pemeriksaan</p><div class="pkt">${it.paket.map(k => `<div class="pk${k.b ? " best" : ""}">${k.b ? `<span class="pk-b micro">${esc(k.b)}</span>` : ""}<p class="pk-n">${esc(k.n)}</p><p class="pk-p">${esc(k.p)}</p><ul class="fakta">${k.i.map(x => `<li>${esc(x)}</li>`).join("")}</ul></div>`).join("")}</div>`
+      + (it.bonus ? `<div class="pk-bonus"><b>Bonus spesial gratis</b><p>${esc(it.bonus)}</p></div>` : "") : "");
   $("#pgChips").innerHTML = (it.chips || []).map(([k, v]) => `<span class="ci"><small>${esc(k)}</small><b>${esc(v)}</b></span>`).join("");
   $("#pgMotif").textContent = it.label3;
   pgPic.src = POSTER_URL[i] || ""; pgPic.alt = "Poster " + it.title;
