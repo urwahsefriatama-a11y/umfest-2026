@@ -149,6 +149,7 @@ img{display:block}
 
 .pill{position:fixed;left:0;top:0;z-index:25;padding:calc(7*var(--u)) calc(14*var(--u));min-height:30px;display:flex;align-items:center;border-radius:99px;background:var(--gold);color:#1A0C10;font-size:max(10.5px,calc(10*var(--u)));opacity:0;pointer-events:none;transition:opacity .12s;white-space:nowrap;box-shadow:0 8px 20px -6px rgba(0,0,0,.6)}
 .pill.on{opacity:1}
+html.ov .pill{opacity:0!important;pointer-events:none!important}
 .pill.door{animation:doorPulse 1.6s ease-in-out infinite}
 @keyframes doorPulse{0%,100%{box-shadow:0 0 0 0 rgba(217,182,110,.55),0 8px 20px rgba(0,0,0,.4)}50%{box-shadow:0 0 0 10px rgba(217,182,110,0),0 8px 20px rgba(0,0,0,.4)}}
 .arr[hidden]{display:none}
@@ -785,7 +786,7 @@ budaya("angklung", "Angklung", "Getar bambu dari Tanah Pasundan", "Jawa Barat",
   "UNESCO menetapkan angklung sebagai Warisan Budaya Takbenda dunia pada November 2010.", ["angklung"], 6, "GALERI BUDAYA · TATAR SUNDA · WARISAN BUDAYA TAKBENDA UNESCO 2010");
 add({ type: "sorot", slug: "pentas-santri", title: "Pentas Kolaborasi Santri", short: "Pentas Kolaborasi Santri", tagline: "Tiga bahasa, satu panggung.", sub: "Panggung santri · Pendopo Lt. 2", kick: "Sorotan acara", cat: "SOROTAN ACARA · PANGGUNG SANTRI", l2: "Sorotan Acara", th: 0, art: ["stage"],
   billing: "PIDATO BAHASA ARAB · STORY TELLING BAHASA INGGRIS · PIDATO BAHASA INDONESIA · TUHFATUL ATHFAL · HADITS ARBAIN · TAQDIMUL QISHOH · 08.00 WIB",
-  story: ["Panggung milik para santri! Dari pidato bahasa Arab, story telling bahasa Inggris, dan pidato bahasa Indonesia, sampai lantunan Tuhfatul Athfal dan Hadits Arbain.", "Ada juga Taqdimul Qishoh (bercerita) dan pembagian hadiah UM Championship 2026. Siapkan tepuk tangan terbaikmu."],
+  story: ["Panggung milik para santri! Dari pidato bahasa Arab, story telling bahasa Inggris, dan pidato bahasa Indonesia, sampai lantunan Tuhfatul Athfal dan Hadits Arbain.", "Ada juga Taqdimul Qishoh (bercerita) dan pembagian hadiah UM Championship 2026. Yuk, hadir dan dukung mereka dengan doa terbaikmu."],
   fact: "Tradisi bercerita juga hidup di Tatar Sunda lewat carita pantun: kisah panjang yang dibawakan juru pantun dengan iringan kacapi.",
   chips: [["Waktu", "08.00–08.59 WIB"], ["Tempat", "Pendopo Lt. 2"]], acc: ["lokasi"], group: "Sorotan Acara", rundown: 4 });
 add({ type: "pem", slug: "seminar-muslimah", title: "Muslimah Level Up", short: "Kak Ajeng Andrarianti", tagline: "Inspiratif dan Mandiri", sub: "Bersama Kak Ajeng Andrarianti, owner Khimar Yumna", kick: "Seminar · Santri & Ummahat", cat: "SEMINAR · SANTRI & UMMAHAT", l2: "Seminar · 09.44 WIB · Pendopo Lt. 2", th: 2, art: ["khimar", "mic"],
