@@ -1881,28 +1881,24 @@ function audioUnlock() {
   try { snd.ac = new AC(); buildFoot(snd.ac, snd); } catch (er) { snd.ac = null; }
 }
 function buildFoot(ac, o) {
-  const sr = ac.sampleRate, n = (sr * .4) | 0, br = ac.createBuffer(1, n, sr), wh = ac.createBuffer(1, n, sr), d = br.getChannelData(0), w = wh.getChannelData(0);
-  let l = 0; for (let i = 0; i < n; i++) { const r = Math.random() * 2 - 1; w[i] = r; l = (l + .02 * r) / 1.02; d[i] = l * 3.5; }
-  const irn = (sr * .6) | 0, ir = ac.createBuffer(2, irn, sr);
-  for (let c = 0; c < 2; c++) { const x = ir.getChannelData(c); for (let i = 0; i < irn; i++) x[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / irn, 3.4) * .45; }
-  const conv = ac.createConvolver(), tone = ac.createBiquadFilter(), dry = ac.createGain(), wet = ac.createGain(), wlp = ac.createBiquadFilter();
-  conv.buffer = ir; tone.type = "lowpass"; tone.frequency.value = 1000; tone.Q.value = .5; wlp.type = "lowpass"; wlp.frequency.value = 700; dry.gain.value = 1; wet.gain.value = .14;
-  o.master = ac.createGain(); o.master.gain.value = .9; o.master.connect(tone); tone.connect(dry); dry.connect(ac.destination); tone.connect(conv); conv.connect(wlp); wlp.connect(wet); wet.connect(ac.destination);
-  o.noise = br; o.white = wh;
+  const sr = ac.sampleRate, n = (sr * .5) | 0, pk = ac.createBuffer(1, n, sr), d = pk.getChannelData(0);
+  let b0 = 0, b1 = 0, b2 = 0, b3 = 0, b4 = 0, b5 = 0, b6 = 0;
+  for (let i = 0; i < n; i++) { const w = Math.random() * 2 - 1; b0 = .99886 * b0 + w * .0555179; b1 = .99332 * b1 + w * .0750759; b2 = .969 * b2 + w * .153852; b3 = .8665 * b3 + w * .3104856; b4 = .55 * b4 + w * .5329522; b5 = -.7616 * b5 - w * .016898; d[i] = (b0 + b1 + b2 + b3 + b4 + b5 + b6 + w * .5362) * .11; b6 = w * .115926; }
+  o.master = ac.createGain(); o.master.gain.value = 1.1; o.master.connect(ac.destination); o.noise = pk;
 }
 function footstep(ac0, o0, at) {
   const ac = ac0 || snd.ac, o = o0 || snd; if (!ac || (!ac0 && ac.state !== "running")) return;
   const t = (at != null ? at : ac.currentTime + .02), side = (o.side = -(o.side || 1)), v = .85 + Math.random() * .3;
-  let out = o.master; if (ac.createStereoPanner) { const pn = ac.createStereoPanner(); pn.pan.value = side * .08; pn.connect(o.master); out = pn; }
-  const hit = (buf, dt, type, freq, q, gain, att, dec) => {
-    const sb = ac.createBufferSource(), f = ac.createBiquadFilter(), hp = ac.createBiquadFilter(), g = ac.createGain();
-    sb.buffer = buf; sb.playbackRate.value = .9 + Math.random() * .2; f.type = type; f.frequency.value = freq; f.Q.value = q; hp.type = "highpass"; hp.frequency.value = 55; hp.Q.value = .5;
+  let out = o.master; if (ac.createStereoPanner) { const pn = ac.createStereoPanner(); pn.pan.value = side * .06; pn.connect(o.master); out = pn; }
+  const puff = (dt, lo, hi, gain, att, dec) => {
+    const sb = ac.createBufferSource(), lp = ac.createBiquadFilter(), hp = ac.createBiquadFilter(), g = ac.createGain();
+    sb.buffer = o.noise; lp.type = "lowpass"; lp.frequency.value = hi; lp.Q.value = .3; hp.type = "highpass"; hp.frequency.value = lo; hp.Q.value = .3;
     g.gain.setValueAtTime(0, t + dt); g.gain.linearRampToValueAtTime(gain * v, t + dt + att); g.gain.setTargetAtTime(0, t + dt + att, dec);
-    sb.connect(f); f.connect(hp); hp.connect(g); g.connect(out); sb.start(t + dt, Math.random() * .1, .32);
+    sb.connect(hp); hp.connect(lp); lp.connect(g); g.connect(out); sb.start(t + dt, Math.random() * .3, .4);
   };
-  hit(o.noise, 0, "lowpass", 250 + Math.random() * 60, .4, .6, .018, .05);
-  hit(o.noise, .085, "lowpass", 420 + Math.random() * 80, .4, .3, .026, .06);
-  hit(o.white, .02, "bandpass", 1500 + Math.random() * 300, .7, .005, .05, .06);
+  puff(0, 90, 700 + Math.random() * 150, .9, .03, .045);
+  puff(.11, 140, 1000 + Math.random() * 200, .45, .035, .05);
+  puff(-.03, 600, 2200, .06, .05, .05);
 }
 ["pointerdown", "keydown", "wheel", "touchstart"].forEach(ev => addEventListener(ev, audioUnlock, { passive: true }));
 function stepTick(t) {
