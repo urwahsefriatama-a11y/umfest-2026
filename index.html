@@ -1878,30 +1878,37 @@ function audioUnlock() {
   if (!snd.on) return;
   if (snd.ac) { if (snd.ac.state === "suspended") snd.ac.resume(); return; }
   const AC = window.AudioContext || window.webkitAudioContext; if (!AC) return;
-  try {
-    const ac = new AC(), n = (ac.sampleRate * .3) | 0, b = ac.createBuffer(1, n, ac.sampleRate), d = b.getChannelData(0);
-    for (let i = 0; i < n; i++) d[i] = Math.random() * 2 - 1;
-    snd.ac = ac; snd.noise = b; snd.master = ac.createGain(); snd.master.gain.value = .5; snd.master.connect(ac.destination);
-  } catch (er) {}
+  try { snd.ac = new AC(); buildFoot(snd.ac, snd); } catch (er) { snd.ac = null; }
+}
+function buildFoot(ac, o) {
+  const sr = ac.sampleRate, n = (sr * .4) | 0, br = ac.createBuffer(1, n, sr), wh = ac.createBuffer(1, n, sr), d = br.getChannelData(0), w = wh.getChannelData(0);
+  let l = 0; for (let i = 0; i < n; i++) { const r = Math.random() * 2 - 1; w[i] = r; l = (l + .02 * r) / 1.02; d[i] = l * 3.5; }
+  const irn = (sr * .6) | 0, ir = ac.createBuffer(2, irn, sr);
+  for (let c = 0; c < 2; c++) { const x = ir.getChannelData(c); for (let i = 0; i < irn; i++) x[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / irn, 3.4) * .45; }
+  const conv = ac.createConvolver(), tone = ac.createBiquadFilter(), dry = ac.createGain(), wet = ac.createGain(), wlp = ac.createBiquadFilter();
+  conv.buffer = ir; tone.type = "lowpass"; tone.frequency.value = 1000; tone.Q.value = .5; wlp.type = "lowpass"; wlp.frequency.value = 700; dry.gain.value = 1; wet.gain.value = .14;
+  o.master = ac.createGain(); o.master.gain.value = .9; o.master.connect(tone); tone.connect(dry); dry.connect(ac.destination); tone.connect(conv); conv.connect(wlp); wlp.connect(wet); wet.connect(ac.destination);
+  o.noise = br; o.white = wh;
+}
+function footstep(ac0, o0, at) {
+  const ac = ac0 || snd.ac, o = o0 || snd; if (!ac || (!ac0 && ac.state !== "running")) return;
+  const t = (at != null ? at : ac.currentTime + .02), side = (o.side = -(o.side || 1)), v = .85 + Math.random() * .3;
+  let out = o.master; if (ac.createStereoPanner) { const pn = ac.createStereoPanner(); pn.pan.value = side * .08; pn.connect(o.master); out = pn; }
+  const hit = (buf, dt, type, freq, q, gain, att, dec) => {
+    const sb = ac.createBufferSource(), f = ac.createBiquadFilter(), hp = ac.createBiquadFilter(), g = ac.createGain();
+    sb.buffer = buf; sb.playbackRate.value = .9 + Math.random() * .2; f.type = type; f.frequency.value = freq; f.Q.value = q; hp.type = "highpass"; hp.frequency.value = 55; hp.Q.value = .5;
+    g.gain.setValueAtTime(0, t + dt); g.gain.linearRampToValueAtTime(gain * v, t + dt + att); g.gain.setTargetAtTime(0, t + dt + att, dec);
+    sb.connect(f); f.connect(hp); hp.connect(g); g.connect(out); sb.start(t + dt, Math.random() * .1, .32);
+  };
+  hit(o.noise, 0, "lowpass", 250 + Math.random() * 60, .4, .6, .018, .05);
+  hit(o.noise, .085, "lowpass", 420 + Math.random() * 80, .4, .3, .026, .06);
+  hit(o.white, .02, "bandpass", 1500 + Math.random() * 300, .7, .005, .05, .06);
 }
 ["pointerdown", "keydown", "wheel", "touchstart"].forEach(ev => addEventListener(ev, audioUnlock, { passive: true }));
-function footstep() {
-  const ac = snd.ac; if (!ac || ac.state !== "running") return;
-  const t = ac.currentTime + .01, side = (snd.side = -snd.side), v = .8 + Math.random() * .3;
-  let out = snd.master; if (ac.createStereoPanner) { const pn = ac.createStereoPanner(); pn.pan.value = side * .16; pn.connect(snd.master); out = pn; }
-  const o = ac.createOscillator(), og = ac.createGain(); o.type = "sine"; o.frequency.setValueAtTime(105 + Math.random() * 25, t); o.frequency.exponentialRampToValueAtTime(46, t + .1);
-  og.gain.setValueAtTime(0, t); og.gain.linearRampToValueAtTime(.55 * v, t + .006); og.gain.exponentialRampToValueAtTime(.001, t + .13); o.connect(og); og.connect(out); o.start(t); o.stop(t + .15);
-  [[0, 1], [.075, .6]].forEach(([dt, k]) => {
-    const sb = ac.createBufferSource(), f = ac.createBiquadFilter(), g = ac.createGain();
-    sb.buffer = snd.noise; sb.playbackRate.value = .8 + Math.random() * .4; f.type = "lowpass"; f.frequency.value = 650 + Math.random() * 350; f.Q.value = .8;
-    g.gain.setValueAtTime(0, t + dt); g.gain.linearRampToValueAtTime(.32 * v * k, t + dt + .006); g.gain.exponentialRampToValueAtTime(.001, t + dt + .1);
-    sb.connect(f); f.connect(g); g.connect(out); sb.start(t + dt, Math.random() * .15, .13);
-  });
-}
 function stepTick(t) {
   if (!snd.on || !snd.ac || covered) { snd.prev = null; return; }
   const ex = pose.r * Math.cos(pose.th), ez = pose.r * Math.sin(pose.th);
-  if (snd.prev) { const d = Math.hypot(ex - snd.prev[0], ez - snd.prev[1]); if (d > .0006) { snd.acc += d; if (snd.acc > .85 && t - snd.last > 270) { snd.acc = 0; snd.last = t; footstep(); } } else snd.acc = Math.max(snd.acc, .6); }
+  if (snd.prev) { const d = Math.hypot(ex - snd.prev[0], ez - snd.prev[1]); if (d > .0006) { snd.acc += d; if (snd.acc > .9 && t - snd.last > 300) { snd.acc = 0; snd.last = t; footstep(); } } else snd.acc = Math.max(snd.acc, .6); }
   snd.prev = [ex, ez];
 }
 sndBtn.addEventListener("click", () => { snd.on = !snd.on; try { localStorage.setItem("umfest-snd", snd.on ? "1" : "0"); } catch (er) {} sndUI(); if (snd.on) { audioUnlock(); snd.acc = .6; footstep(); } });
