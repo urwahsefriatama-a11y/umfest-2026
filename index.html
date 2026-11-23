@@ -101,7 +101,7 @@ img{display:block}
 .arr svg{width:max(18px,calc(20*var(--u)));height:max(18px,calc(20*var(--u)))}
 @media (hover:hover){.arr:hover{background:var(--gold);color:#1A0C10}}
 .arr:active{background:var(--gold);color:#1A0C10}
-.hint{position:absolute;right:calc(27*var(--u));bottom:max(calc(229*var(--u)),calc(max(60px,82*var(--u)) + 56*var(--u) + 97px));text-align:right;font-size:max(10.5px,calc(10*var(--u)));line-height:1.75;color:var(--ink-60)}
+.hint{pointer-events:none;position:absolute;right:calc(27*var(--u));bottom:max(calc(229*var(--u)),calc(max(60px,82*var(--u)) + 56*var(--u) + 97px));text-align:right;font-size:max(10.5px,calc(10*var(--u)));line-height:1.75;color:var(--ink-60)}
 .tog{position:absolute;right:calc(29*var(--u));bottom:calc(174*var(--u));display:flex;gap:2px;padding:3px;border:1px solid rgba(217,182,110,.35);border-radius:99px;background:rgba(13,6,8,.55)}
 .tog button{height:max(26px,calc(24*var(--u)));padding:0 calc(14*var(--u));min-width:64px;border-radius:99px;font-size:max(10.5px,calc(9.5*var(--u)));color:var(--ink-60);transition:background-color .25s,color .25s}
 .tog button.on{background:var(--gold);color:#1A0C10}
@@ -153,6 +153,8 @@ img{display:block}
 @keyframes doorPulse{0%,100%{box-shadow:0 0 0 0 rgba(217,182,110,.55),0 8px 20px rgba(0,0,0,.4)}50%{box-shadow:0 0 0 10px rgba(217,182,110,0),0 8px 20px rgba(0,0,0,.4)}}
 .arr[hidden]{display:none}
 .arr.on{background:var(--gold);color:#1A0C10}
+@media (orientation:portrait) and (max-width:1100px){#sndBtn,#gyro{position:fixed;right:16px;top:calc(132px + env(safe-area-inset-top))}#gyro{top:calc(186px + env(safe-area-inset-top))}}
+#sndBtn .sx{display:none}#sndBtn.off .sx{display:inline}#sndBtn.off .sw1{display:none}
 .pop{position:fixed;inset:0;z-index:60;display:grid;place-items:center;padding:24px;background:rgba(8,3,5,.62);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);opacity:0;transition:opacity .25s}
 .pop[hidden]{display:none}
 .pop.on{opacity:1}
@@ -328,6 +330,7 @@ img{display:block}
 .rr.flash{animation:flash 1.6s var(--ease)}
 @keyframes flash{0%,40%{background:rgba(217,182,110,.3)}}
 
+.pop-l.js-pd{height:auto;width:min(230px,70%)}
 .pop-c.cr{padding-top:0;overflow:hidden}
 .cr-img{position:relative;margin:0 -30px;aspect-ratio:16/10;overflow:hidden}
 .cr-img img{display:block;width:100%;height:100%;object-fit:cover;transform:scale(1.06);transition:transform 1.6s cubic-bezier(.2,.8,.2,1)}
@@ -374,6 +377,7 @@ img{display:block}
 .rm-cta{display:grid;grid-template-columns:1fr auto;gap:24px;align-items:center;margin-top:60px;padding:34px 30px;border-radius:26px;background:linear-gradient(135deg,#FF4A1F,#B8240A);color:#fff;box-shadow:0 30px 60px -24px rgba(255,74,31,.55)}
 .rm-cta h3{margin:0;font-family:var(--serif);font-size:clamp(28px,3.8vw,42px);font-weight:900;line-height:1.1}
 .rm-cta p{margin:10px 0 0;font-size:15px;line-height:1.6;color:rgba(255,255,255,.9)}
+.rm-price{display:inline-block;margin-bottom:12px;padding:6px 14px;border-radius:99px;background:#C6FF0A;color:#160A05;font-size:12px;font-weight:820;letter-spacing:.08em;text-transform:uppercase}
 .wa{display:inline-flex;align-items:center;gap:12px;height:60px;padding:0 26px 0 20px;border-radius:99px;background:#C6FF0A;color:#160A05;font-weight:820;font-size:15px;white-space:nowrap;transition:transform .3s var(--ease)}
 .wa:active{transform:scale(.97)}
 .wa svg{width:26px;height:26px}
@@ -468,6 +472,7 @@ img{display:block}
   <div class="arrows">
     <button class="arr" type="button" id="prev" aria-label="Bingkai sebelumnya"><svg class="ic" viewBox="0 0 24 24"><path d="M19 12H5M11 6l-6 6 6 6"/></svg></button>
     <button class="arr" type="button" id="next" aria-label="Bingkai berikutnya"><svg class="ic" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+    <button class="arr" type="button" id="sndBtn" aria-label="Suara langkah" aria-pressed="true"><svg class="ic" viewBox="0 0 24 24"><path d="M4 9.5h3.5L12 6v12l-4.5-3.5H4z"/><path class="sw1" d="M15.5 9.5a3.5 3.5 0 0 1 0 5M18 7a7 7 0 0 1 0 10"/><path class="sx" d="M16 9.5l5 5M21 9.5l-5 5"/></svg></button>
     <button class="arr" type="button" id="gyro" aria-label="Nengok pakai gyro HP" aria-pressed="false"><svg class="ic" viewBox="0 0 24 24"><rect x="8" y="3.5" width="8" height="17" rx="1.8"/><path d="M11 17.5h2M3.5 9.5a8.5 8.5 0 0 1 2.2-3.6M5.7 5.9l.2 2.3-2.3.1M20.5 14.5a8.5 8.5 0 0 1-2.2 3.6M18.3 18.1l-.2-2.3 2.3-.1"/></svg></button>
   </div>
   <p class="hint micro"><span class="m"><span id="h1t">Scroll atau geser untuk berjalan</span></span><span class="m"><span id="h2t">Ketuk poster untuk melihat lebih dekat</span></span></p>
@@ -549,10 +554,10 @@ img{display:block}
         <p class="rm-k micro">Ruang 521 · Sponsor &amp; pembuat website</p>
         <img class="rm-logo" data-img="c521t" alt="521 Coffee Cart">
         <h2 class="rm-t">Teman kamu, <em>belajar &amp; bekerja.</em></h2>
-        <p class="rm-lead">521 Coffee Cart adalah gerobak kopi yang lahir untuk menemani para pelajar dan pekerja yang sedang berjuang. Kopinya disajikan dalam botol 200 ml yang praktis dibawa ke kelas, kantor, atau perjalanan — enak, terjangkau, dan selalu siap menemani.</p>
+        <p class="rm-lead">521 Coffee Cart adalah coffee cart yang lahir untuk menemani para pelajar dan pekerja yang sedang berjuang. Kopinya disajikan dalam botol 200 ml yang praktis dibawa ke kelas, kantor, atau perjalanan — enak, terjangkau, dan selalu siap menemani.</p>
         <div class="rm-btns"><a class="btn lime" target="_blank" rel="noopener" href="https://abyan1608-netizen.github.io/521-Coffee-Cart-Web/">Kunjungi website 521 →</a><button class="btn ghost" type="button" data-nav="lorong">Kembali ke lorong</button></div>
       </div>
-      <div class="rm-art"><img id="rmCart" alt="Ilustrasi gerobak 521 Coffee Cart"></div>
+      <div class="rm-art"><img id="rmCart" alt="Ilustrasi coffee cart 521"></div>
     </div>
     <p class="rm-h micro">Menu andalan</p>
     <div class="rm-menu">
@@ -561,17 +566,17 @@ img{display:block}
       <div class="mn"><img data-img="mmatcha" alt="Matcha 521 edisi UM-Fest" loading="lazy"><b>Matcha Latte</b><p>Matcha dan susu yang lembut — pilihan segar untuk rehat sejenak dari kopi.</p></div>
       <div class="mn"><img data-img="mblack" alt="Kopi botol Black Caffe 521" loading="lazy"><b>Black Caffe</b><p>Espresso dan air, tanpa gula. Kopi hitam yang bersih untuk menemani fokus.</p></div>
     </div>
-    <p class="rm-h micro">Dari gerobak, terus melaju</p>
-    <p class="rm-p">Berawal dari sebuah gerobak, 521 kini menjangkau lebih banyak orang lewat toko offline, pesanan online, jaringan reseller, dan berbagai event.</p>
-    <div class="rm-ch"><span>Gerobak kopi</span><span>Toko offline</span><span>GoFood</span><span>Pesan via WhatsApp</span><span>Reseller</span><span>Event</span></div>
+    <p class="rm-h micro">Dari cart, terus melaju</p>
+    <p class="rm-p">Berawal dari sebuah coffee cart, 521 kini menjangkau lebih banyak orang lewat toko offline, pesanan online, jaringan reseller, dan berbagai event.</p>
+    <div class="rm-ch"><span>Coffee cart</span><span>Toko offline</span><span>GoFood</span><span>Pesan via WhatsApp</span><span>Reseller</span><span>Event</span></div>
     <p class="rm-h micro">Lebih dari kopi</p>
     <div class="rm-more">
       <div class="mo"><img data-art="struk" alt=""><div><b>521 Moment</b><p>Photobooth struk: foto tamu langsung tercetak di kertas thermal, jadi kenang-kenangan yang bisa dibawa pulang dari setiap event.</p><small class="micro">Sedang disiapkan</small></div></div>
-      <div class="mo"><img data-art="web" alt=""><div><b>Website ini</b><p>Lorong pameran UM-Fest 2.0 ini dirancang 521 Coffee Cart bersama Presentdien: lorong 3D, poster ilustrasi, galeri budaya, hitung mundur, dan rundown.</p><small class="micro">Presentdien × 521 Coffee Cart</small></div></div>
+      <div class="mo"><img data-art="web" alt=""><div><b>Website ini</b><p>Lorong pameran UM-Fest 2.0 ini dirancang 521 Coffee Cart bersama Presentdien: lorong 3D, poster ilustrasi, galeri budaya, hitung mundur, dan rundown. Mau dibuatkan juga? Website UMKM mulai Rp259.000.</p><small class="micro">Presentdien × 521 Coffee Cart</small></div></div>
     </div>
     <div class="rm-cta">
-      <div><h3>Mau bikin website seperti ini?</h3><p>Untuk acara sekolah, pesantren, komunitas, atau usahamu — kami bantu dari konsep sampai online.</p></div>
-      <a class="wa" target="_blank" rel="noopener" href="https://wa.me/6287738447822?text=Halo%2C%20saya%20lihat%20website%20UM-Fest%202.0%20dan%20ingin%20bikin%20website%20seperti%20ini."><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.7.8-.8 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6a2.7 2.7 0 0 0 1.8-1.3 2.2 2.2 0 0 0 .2-1.3c-.1-.1-.3-.2-.5-.3z"/></svg><span>Chat WhatsApp<small>0877-3844-7822</small></span></a>
+      <div><span class="rm-price">Website UMKM mulai Rp259.000</span><h3>Mau bikin website seperti ini?</h3><p>Jasa pembuatan website dari Presentdien × 521 Coffee Cart, untuk UMKM, acara sekolah, pesantren, dan komunitas. Kami bantu dari konsep sampai online.</p></div>
+      <a class="wa" target="_blank" rel="noopener" href="https://wa.me/6287738447822?text=Halo%2C%20saya%20lihat%20website%20UM-Fest%202.0%20dan%20ingin%20bikin%20website%20(mulai%20Rp259.000)."><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.7.8-.8 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6a2.7 2.7 0 0 0 1.8-1.3 2.2 2.2 0 0 0 .2-1.3c-.1-.1-.3-.2-.5-.3z"/></svg><span>Chat WhatsApp<small>0877-3844-7822</small></span></a>
     </div>
   </div>
   <footer class="credit" data-credit></footer>
@@ -592,6 +597,17 @@ img{display:block}
   <div class="dr-body"><ol style="list-style:none;margin:0;padding:0" id="runList"></ol></div>
 </aside>
 
+<div class="pop" id="jsPop" hidden>
+  <div class="pop-c" role="dialog" aria-modal="true" aria-labelledby="jsT">
+    <button class="pop-x" type="button" id="jsX" aria-label="Tutup">×</button>
+    <img class="pop-l js-pd" data-img="pd" alt="Presentdien">
+    <p class="pop-k micro">Jasa pembuatan website</p>
+    <h3 id="jsT">Mau bikin website <em>seperti ini?</em></h3>
+    <p class="pop-d">Website UMKM mulai <b>Rp259.000</b>. Bisa juga untuk acara sekolah, pesantren, dan komunitas. Kami bantu dari konsep sampai online.</p>
+    <a class="btn p1" id="jsGo" target="_blank" rel="noopener" href="https://wa.me/6287738447822?text=Halo%2C%20saya%20lihat%20website%20UM-Fest%202.0%20dan%20ingin%20bikin%20website%20(mulai%20Rp259.000).">Chat WA 0877-3844-7822</a>
+    <button class="pop-r" type="button" id="jsRoom">Lihat Ruang 521</button>
+  </div>
+</div>
 <div class="pop" id="crPop" hidden>
   <div class="pop-c cr" role="dialog" aria-modal="true" aria-labelledby="crT">
     <button class="pop-x" type="button" id="crX" aria-label="Tutup">×</button>
@@ -835,7 +851,7 @@ sponsor("zakira", "Zakira", "Moslem hijab identity", null, { art: ["hanger", "fo
   story: ["Zakira — moslem hijab identity — mendukung UM-Fest 2.0 yang mengusung tema muslimah inspiratif dan mandiri.", "Jazakumullahu khairan atas dukungannya."],
   fact: "Songket ditenun dengan menyisipkan benang emas atau perak di antara benang pakan, sehingga motifnya tampak berkilau." });
 sponsor("521", "521 Coffee Cart", "Sponsor & pembuat website", null, { img: "c521t", wide: true, art: ["cart"], th: 0, photos: ["pbut", "pmat"], photoCap: ["BUTTERSCOTCH", "MATCHA"], ptag: "Butterscotch & Matcha, edisi spesial UM-Fest",
-  story: ["Gerobak kopi 521 Coffee Cart ikut mendukung UM-Fest 2.0.", "Bersama Presentdien, 521 Coffee Cart juga merancang website lorong pameran yang sedang kamu jelajahi ini."],
+  story: ["521 Coffee Cart ikut mendukung UM-Fest 2.0.", "Bersama Presentdien, 521 Coffee Cart juga merancang website lorong pameran yang sedang kamu jelajahi ini."],
   fact: "Kopi mulai ditanam di Jawa pada akhir abad ke-17, dan Priangan di Jawa Barat sempat menjadi salah satu sentra kopi terpenting. Karena itu, di banyak negara kopi dijuluki java." });
 const N = ITEMS.length;
 ITEMS.forEach(it => { it.label1 = it.short || it.title; it.label3 = `Motif ${it.motif.n} · ${it.motif.o}`; it.col = THEME[it.th]; });
@@ -1095,6 +1111,12 @@ function drawBoards(imgs) {
   g.fillStyle = "#FFF1DC"; g.font = "800 34px Auster"; spacedC(g, "TEMAN KAMU, BELAJAR & BEKERJA", 512, 1248, 6);
   g.font = "900 34px Auster"; const t2 = "KETUK UNTUK MAMPIR"; let tw = 70; for (const ch of t2) tw += g.measureText(ch).width + 5;
   rrp(g, 512 - tw / 2, 1298, tw, 74, 37); g.fillStyle = "#C6FF0A"; g.fill(); g.fillStyle = "#1A0A05"; spacedC(g, t2, 512, 1347, 5);
+  g.fillStyle = "#F1D79A"; g.font = "800 22px Auster"; spacedC(g, "PRESENTDIEN  ×  521 COFFEE CART", 512, 1438, 5);
+  g.textAlign = "center"; g.fillStyle = "#FFF4E2"; g.font = `900 66px ${SERIF}`; g.fillText("Mau bikin website", 512, 1532);
+  g.fillStyle = "#F1D79A"; g.font = `italic 800 66px ${SERIF}`; g.fillText("seperti ini?", 512, 1606); g.textAlign = "left";
+  g.font = "900 34px Auster"; const t3 = "WEBSITE UMKM MULAI Rp259.000"; let tw3 = 76; for (const ch of t3) tw3 += g.measureText(ch).width + 4;
+  rrp(g, 512 - tw3 / 2, 1648, tw3, 74, 37); g.fillStyle = "#C6FF0A"; g.fill(); g.fillStyle = "#140805"; spacedC(g, t3, 512, 1697, 4);
+  g.fillStyle = "#FFF4E2"; g.font = "800 27px Auster"; spacedC(g, "HUBUNGI KAMI  ·  WA 0877-3844-7822", 512, 1780, 4);
   return c;
 }
 function drawRoomGlow(imgs) {
@@ -1403,10 +1425,19 @@ cta=smoothstep(5.5,5.9,t)*(1.-smoothstep(7.45,7.65,t));float cs=eob((t-5.5)/.45)
 float wp=(t-7.55)/.75;if(wp>0.){float u=p.x+(p.y-288.)*.42,e1=mix(-420.,1460.,eo(wp));if(u<e1-340.)col=bg;else if(u<e1-250.)col=vec3(.78,1.,.05);else if(u<e1)col=vec3(1.,.29,.12);}
 float on=smoothstep(0.,.5,t),op=on*on,band=abs(p.y-288.)/288.;col*=step(band,op);col+=vec3(1.,.96,.88)*smoothstep(.025,0.,abs(band-op))*(1.-on)*1.6;
 col*=1.-smoothstep(8.55,9.,t);}
-else col=tx(p).rgb;
+else{float t2=mod(uT,12.);vec3 cred=tx(p).rgb;vec2 cp=p-vec2(512.,288.);float rr=length(cp)/620.;
+vec3 pb=mix(vec3(.11,.47,.5),vec3(.025,.13,.14),smoothstep(0.,1.,rr));pb+=vec3(.6,.95,1.)*smoothstep(.08,0.,abs(fract((p.x+p.y*.5)/1100.-uT*.06)-.5))*.06;vec3 pr=pb;
+pr=ov(pr,spr(p,vec2(512.,70.),vec2(1024.,40.),vec4(0.,1410.,1024.,1450.),1.),smoothstep(5.1,5.5,t2));
+float e2=eo((t2-5.3)/.6);pr=ov(pr,spr(p,vec2(512.,205.+(1.-e2)*30.),vec2(1024.,170.),vec4(0.,1460.,1024.,1630.),1.),e2);
+float s3=eob((t2-6.)/.5)*(1.+.04*sin((t2-6.)*6.)*step(6.6,t2));pr=ov(pr,spr(p,vec2(512.,365.),vec2(1024.,90.),vec4(0.,1640.,1024.,1730.),s3),step(6.,t2));
+pr=ov(pr,spr(p,vec2(512.,470.),vec2(1024.,60.),vec4(0.,1750.,1024.,1810.),1.),smoothstep(6.4,6.9,t2));
+float u=p.x+(p.y-288.)*.42,ein=mix(-420.,1460.,eo((t2-4.5)/.6)),eout=mix(-420.,1460.,eo((t2-11.2)/.8));
+if(t2<11.2){col=u<ein?pr:cred;col=mix(col,vec3(.78,1.,.05),smoothstep(9.,0.,abs(u-ein))*step(4.5,t2)*step(t2,5.15));}
+else{col=u<eout?cred:pr;col=mix(col,vec3(.78,1.,.05),smoothstep(9.,0.,abs(u-eout)));}
+cta=step(5.1,t2)*(1.-step(11.2,t2));}
 col*=1.05;col+=vec3(smoothstep(.09,0.,abs(L.x-L.y*.5-fract(uT*.08)*2.+.5))*.1);
 if(e<.035){col=vec3(.02)+vec3(.75,.62,.4)*smoothstep(.0,.004,e-.027)*smoothstep(.035,.031,e)*.6;
- if(b521){float s=fract(atan(m.y-Hh*.5,m.x-W*.5)/6.2832-uT*.45);col+=vec3(.78,1.,.05)*s*s*s*s*s*s*s*s*smoothstep(.035,.02,e)*smoothstep(0.,.006,e)*(.25+.75*cta)*1.4;}}
+ {float s=fract(atan(m.y-Hh*.5,m.x-W*.5)/6.2832-uT*.45);col+=vec3(.78,1.,.05)*s*s*s*s*s*s*s*s*smoothstep(.035,.02,e)*smoothstep(0.,.006,e)*(b521?(.25+.75*cta):cta)*1.4;}}
 col=min(col,vec3(1.));float fo=max(clamp((uFR.y-vD)/(uFR.y-uFR.x),0.,1.),.85);gl_FragColor=vec4(mix(uFog,col,fo)+(fract(52.9829189*fract(dot(gl_FragCoord.xy,vec2(.06711056,.00583715))))-.5)/255.,1.);}`;
   progB = gl.createProgram(); gl.attachShader(progB, sh(gl.VERTEX_SHADER, vs)); gl.attachShader(progB, sh(gl.FRAGMENT_SHADER, fsB));
   gl.bindAttribLocation(progB, 0, "aP"); gl.bindAttribLocation(progB, 1, "aT"); gl.bindAttribLocation(progB, 2, "aC");
@@ -1658,7 +1689,7 @@ function snap(d) { if (entering) return; if (state === "focus") { stepBack(); re
 let lastT = performance.now();
 function frame(t) {
   const dt = Math.min(.05, (t - lastT) / 1000); lastT = t;
-  if (sceneReady && !covered && !RM && popEl.hidden && crEl.hidden && t - lastAnim > 33) { lastAnim = t; dirty = true; }
+  if (sceneReady && !covered && !RM && popEl.hidden && crEl.hidden && jsEl.hidden && t - lastAnim > 33) { lastAnim = t; dirty = true; }
   if (sceneReady) {
     if (doorAnim) { const k = doorAnim.dur ? Math.min(1, (t - doorAnim.t0) / doorAnim.dur) : 1, e = k < .5 ? 4 * k * k * k : 1 - (-2 * k + 2) ** 3 / 2; setDoor(doorAnim.from + (doorAnim.to - doorAnim.from) * e); if (k >= 1) { const d = doorAnim.done; doorAnim = null; d && d(); } }
     if (glide) {
@@ -1673,6 +1704,7 @@ function frame(t) {
     }
     { const fz = state === "focus" || entering || (glide && glide.kind !== "walk"), ty = fz ? 0 : lk.ty, tp = fz ? 0 : lk.tp, ke = RM ? 1 : 1 - Math.exp(-dt / .14);
       if (Math.abs(ty - lk.yaw) > 1e-4 || Math.abs(tp - lk.pitch) > 1e-4) { lk.yaw += (ty - lk.yaw) * ke; lk.pitch += (tp - lk.pitch) * ke; dirty = true; } }
+    stepTick(t);
     if (dirty && !covered) { render(); dirty = false; }
   }
   requestAnimationFrame(frame);
@@ -1696,7 +1728,7 @@ galleryEl.addEventListener("pointermove", e => {
 let hoverRaf = 0;
 function hover(x, y) {
   if (hoverRaf) return;
-  hoverRaf = requestAnimationFrame(() => { hoverRaf = 0; const h = raycast(x, y), bh = boardHit(), dh = doorHit(); galleryEl.classList.toggle("hot", !!h || !!(bh && bh.t < rayT && bh.brand === 0) || !!(dh && dh.t < rayT));
+  hoverRaf = requestAnimationFrame(() => { hoverRaf = 0; const h = raycast(x, y), bh = boardHit(), dh = doorHit(); galleryEl.classList.toggle("hot", !!h || !!(bh && bh.t < rayT) || !!(dh && dh.t < rayT));
     if (focusCopy === DOORCP) return;
     if (state === "focus" && h && h === focusCopy && !glide) { pill.textContent = "Buka detail"; pill.style.transform = `translate(${x}px,${y}px) translate(-50%,-50%)`; pill.classList.add("on"); } else if (!small()) pill.classList.remove("on"); });
 }
@@ -1706,7 +1738,7 @@ function tap(x, y) {
   if (!sceneReady || covered || entering) return;
   const h = raycast(x, y), bh = boardHit(), dh = doorHit();
   if (dh && dh.t < rayT && (!bh || dh.t < bh.t)) { if (state === "focus" && focusCopy === DOORCP && !glide) enterDoor(); else focusDoor(); return; }
-  if (bh && bh.t < rayT) { if (bh.brand === 0) showPop(); return; }
+  if (bh && bh.t < rayT) { if (bh.brand === 0) showPop(); else openP(jsEl); return; }
   if (state === "focus") { if (h && h === focusCopy) openFrom3D(h); else if (h) focusOn(h); else stepBack(); }
   else if (h) focusOn(h);
 }
@@ -1717,8 +1749,8 @@ function openFrom3D(cp) { hidePill(); nav(ITEMS[cp.i].slug, { from3d: cp }); }
 $("#prev").addEventListener("click", () => snap(-1));
 $("#next").addEventListener("click", () => snap(1));
 addEventListener("keydown", e => {
-  if (e.key === "Escape") { if (!crEl.hidden) { hideCr(); return; } if (!popEl.hidden) { hidePop(); return; } if (openDr) closeDrawer(); else if (document.documentElement.classList.contains("ov")) nav("lorong"); else stepBack(); return; }
-  if (document.documentElement.classList.contains("ov") || openDr || !sceneReady || !popEl.hidden || !crEl.hidden) return;
+  if (e.key === "Escape") { if (!jsEl.hidden) { closeP(jsEl); return; } if (!crEl.hidden) { hideCr(); return; } if (!popEl.hidden) { hidePop(); return; } if (openDr) closeDrawer(); else if (document.documentElement.classList.contains("ov")) nav("lorong"); else stepBack(); return; }
+  if (document.documentElement.classList.contains("ov") || openDr || !sceneReady || !popEl.hidden || !crEl.hidden || !jsEl.hidden) return;
   if (e.key === "ArrowRight" || e.key === "ArrowDown") { e.preventDefault(); snap(1); }
   if (e.key === "ArrowLeft" || e.key === "ArrowUp") { e.preventDefault(); snap(-1); }
 });
@@ -1827,6 +1859,52 @@ function rotateHL() {
   }
   setTimeout(rotateHL, stepIdx === 0 ? 4200 : stepIdx === 1 ? 3600 : 3200);
 }
+
+/* ================= POP-UP JASA WEBSITE ================= */
+const jsEl = $("#jsPop");
+function openP(el) { hidePill(); el.hidden = false; requestAnimationFrame(() => requestAnimationFrame(() => el.classList.add("on"))); }
+function closeP(el) { el.classList.remove("on"); setTimeout(() => { if (!el.classList.contains("on")) el.hidden = true; }, 300); }
+jsEl.addEventListener("click", e => { if (e.target === jsEl) closeP(jsEl); });
+$("#jsX").addEventListener("click", () => closeP(jsEl)); $("#jsGo").addEventListener("click", () => setTimeout(() => closeP(jsEl), 150));
+$("#jsRoom").addEventListener("click", () => { closeP(jsEl); setTimeout(() => focusDoor(enterDoor), 250); });
+
+/* ================= SUARA LANGKAH ================= */
+const snd = { on: true, ac: null, noise: null, master: null, acc: .6, last: 0, side: 1, prev: null }, sndBtn = $("#sndBtn");
+try { snd.on = localStorage.getItem("umfest-snd") !== "0"; } catch (er) {}
+if (!(window.AudioContext || window.webkitAudioContext)) sndBtn.hidden = true;
+function sndUI() { sndBtn.classList.toggle("off", !snd.on); sndBtn.setAttribute("aria-pressed", String(snd.on)); sndBtn.setAttribute("aria-label", snd.on ? "Matikan suara langkah" : "Nyalakan suara langkah"); }
+sndUI();
+function audioUnlock() {
+  if (!snd.on) return;
+  if (snd.ac) { if (snd.ac.state === "suspended") snd.ac.resume(); return; }
+  const AC = window.AudioContext || window.webkitAudioContext; if (!AC) return;
+  try {
+    const ac = new AC(), n = (ac.sampleRate * .3) | 0, b = ac.createBuffer(1, n, ac.sampleRate), d = b.getChannelData(0);
+    for (let i = 0; i < n; i++) d[i] = Math.random() * 2 - 1;
+    snd.ac = ac; snd.noise = b; snd.master = ac.createGain(); snd.master.gain.value = .5; snd.master.connect(ac.destination);
+  } catch (er) {}
+}
+["pointerdown", "keydown", "wheel", "touchstart"].forEach(ev => addEventListener(ev, audioUnlock, { passive: true }));
+function footstep() {
+  const ac = snd.ac; if (!ac || ac.state !== "running") return;
+  const t = ac.currentTime + .01, side = (snd.side = -snd.side), v = .8 + Math.random() * .3;
+  let out = snd.master; if (ac.createStereoPanner) { const pn = ac.createStereoPanner(); pn.pan.value = side * .16; pn.connect(snd.master); out = pn; }
+  const o = ac.createOscillator(), og = ac.createGain(); o.type = "sine"; o.frequency.setValueAtTime(105 + Math.random() * 25, t); o.frequency.exponentialRampToValueAtTime(46, t + .1);
+  og.gain.setValueAtTime(0, t); og.gain.linearRampToValueAtTime(.55 * v, t + .006); og.gain.exponentialRampToValueAtTime(.001, t + .13); o.connect(og); og.connect(out); o.start(t); o.stop(t + .15);
+  [[0, 1], [.075, .6]].forEach(([dt, k]) => {
+    const sb = ac.createBufferSource(), f = ac.createBiquadFilter(), g = ac.createGain();
+    sb.buffer = snd.noise; sb.playbackRate.value = .8 + Math.random() * .4; f.type = "lowpass"; f.frequency.value = 650 + Math.random() * 350; f.Q.value = .8;
+    g.gain.setValueAtTime(0, t + dt); g.gain.linearRampToValueAtTime(.32 * v * k, t + dt + .006); g.gain.exponentialRampToValueAtTime(.001, t + dt + .1);
+    sb.connect(f); f.connect(g); g.connect(out); sb.start(t + dt, Math.random() * .15, .13);
+  });
+}
+function stepTick(t) {
+  if (!snd.on || !snd.ac || covered) { snd.prev = null; return; }
+  const ex = pose.r * Math.cos(pose.th), ez = pose.r * Math.sin(pose.th);
+  if (snd.prev) { const d = Math.hypot(ex - snd.prev[0], ez - snd.prev[1]); if (d > .0006) { snd.acc += d; if (snd.acc > .85 && t - snd.last > 270) { snd.acc = 0; snd.last = t; footstep(); } } else snd.acc = Math.max(snd.acc, .6); }
+  snd.prev = [ex, ez];
+}
+sndBtn.addEventListener("click", () => { snd.on = !snd.on; try { localStorage.setItem("umfest-snd", snd.on ? "1" : "0"); } catch (er) {} sndUI(); if (snd.on) { audioUnlock(); snd.acc = .6; footstep(); } });
 
 /* ================= NOTIFIKASI KREDIT ================= */
 const crEl = $("#crPop");
