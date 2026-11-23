@@ -87,8 +87,8 @@ img{display:block}
 #veil img{width:118px;height:auto;filter:drop-shadow(0 0 30px rgba(217,182,110,.35));animation:bob 2.6s ease-in-out infinite}
 @keyframes bob{50%{transform:translateY(-6px)}}
 .greet{height:26px;overflow:hidden;font-family:var(--serif);font-style:italic;font-size:21px}
-.greet span{display:block;height:26px;animation:greet 6s var(--ease) infinite}
-@keyframes greet{0%,20%{transform:translateY(0)}25%,45%{transform:translateY(-26px)}50%,70%{transform:translateY(-52px)}75%,95%{transform:translateY(-78px)}100%{transform:translateY(-104px)}}
+.greet span{display:block;height:26px;animation:greet 3s var(--ease) forwards}
+@keyframes greet{0%,21%{transform:translateY(0)}25%,46%{transform:translateY(-26px)}50%,71%{transform:translateY(-52px)}75%,100%{transform:translateY(-78px)}}
 .veil-t{font-size:10.5px;color:var(--gold)}
 .veil-cr{position:absolute;bottom:calc(24px + env(safe-area-inset-bottom));font-size:11px;color:var(--ink-35);letter-spacing:.08em}
 
@@ -334,10 +334,10 @@ img{display:block}
 .pop.on .cr-img img{transform:none}
 .cr-img::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(26,12,8,0) 55%,#1A0C08 100%)}
 .pop-c.cr .pop-k{margin-top:4px}
-.crp-logos{display:flex;align-items:center;justify-content:center;gap:14px;margin:12px 0 12px}
-.crp-logos img{display:block;width:auto}
-.crp-logos .crp-pd{height:24px}
-.crp-logos .crp-521{height:40px}
+.crp-logos{display:flex;align-items:center;justify-content:center;gap:12px;width:100%;margin:12px 0 12px}
+.crp-logos img{display:block;height:auto;min-width:0;flex:none}
+.crp-logos .crp-pd{width:44%;max-width:160px}
+.crp-logos .crp-521{width:38%;max-width:132px}
 .crp-logos i{font-style:normal;color:var(--gold);font-size:18px}
 .pop-c.cr .pop-x{z-index:2;background:rgba(13,6,5,.55);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}
 @keyframes tbar{from{transform:scaleX(1)}to{transform:scaleX(0)}}
@@ -1858,6 +1858,11 @@ async function boot() {
 let started = false;
 function start() {
   if (started) return; started = true;
+  const wait = Math.max(0, 3000 - performance.now());
+  if (wait > 0) { setTimeout(start2, wait); return; }
+  start2();
+}
+function start2() {
   const w = walkPose(), th = D();
   tgt = th; Object.assign(pose, { th: th + .16, ...w, r: w.r - .35 });
   if (sceneReady) startGlide({ th, ...w }, 1400, "intro");
