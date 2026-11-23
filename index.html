@@ -153,8 +153,7 @@ img{display:block}
 @keyframes doorPulse{0%,100%{box-shadow:0 0 0 0 rgba(217,182,110,.55),0 8px 20px rgba(0,0,0,.4)}50%{box-shadow:0 0 0 10px rgba(217,182,110,0),0 8px 20px rgba(0,0,0,.4)}}
 .arr[hidden]{display:none}
 .arr.on{background:var(--gold);color:#1A0C10}
-@media (orientation:portrait) and (max-width:1100px){#sndBtn,#gyro{position:fixed;right:16px;top:calc(132px + env(safe-area-inset-top))}#gyro{top:calc(186px + env(safe-area-inset-top))}}
-#sndBtn .sx{display:none}#sndBtn.off .sx{display:inline}#sndBtn.off .sw1{display:none}
+@media (orientation:portrait) and (max-width:1100px){#gyro{position:fixed;right:16px;top:calc(132px + env(safe-area-inset-top))}}
 .pop{position:fixed;inset:0;z-index:60;display:grid;place-items:center;padding:24px;background:rgba(8,3,5,.62);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);opacity:0;transition:opacity .25s}
 .pop[hidden]{display:none}
 .pop.on{opacity:1}
@@ -472,7 +471,6 @@ img{display:block}
   <div class="arrows">
     <button class="arr" type="button" id="prev" aria-label="Bingkai sebelumnya"><svg class="ic" viewBox="0 0 24 24"><path d="M19 12H5M11 6l-6 6 6 6"/></svg></button>
     <button class="arr" type="button" id="next" aria-label="Bingkai berikutnya"><svg class="ic" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
-    <button class="arr" type="button" id="sndBtn" aria-label="Suara langkah" aria-pressed="true"><svg class="ic" viewBox="0 0 24 24"><path d="M4 9.5h3.5L12 6v12l-4.5-3.5H4z"/><path class="sw1" d="M15.5 9.5a3.5 3.5 0 0 1 0 5M18 7a7 7 0 0 1 0 10"/><path class="sx" d="M16 9.5l5 5M21 9.5l-5 5"/></svg></button>
     <button class="arr" type="button" id="gyro" aria-label="Nengok pakai gyro HP" aria-pressed="false"><svg class="ic" viewBox="0 0 24 24"><rect x="8" y="3.5" width="8" height="17" rx="1.8"/><path d="M11 17.5h2M3.5 9.5a8.5 8.5 0 0 1 2.2-3.6M5.7 5.9l.2 2.3-2.3.1M20.5 14.5a8.5 8.5 0 0 1-2.2 3.6M18.3 18.1l-.2-2.3 2.3-.1"/></svg></button>
   </div>
   <p class="hint micro"><span class="m"><span id="h1t">Scroll atau geser untuk berjalan</span></span><span class="m"><span id="h2t">Ketuk poster untuk melihat lebih dekat</span></span></p>
@@ -1704,7 +1702,6 @@ function frame(t) {
     }
     { const fz = state === "focus" || entering || (glide && glide.kind !== "walk"), ty = fz ? 0 : lk.ty, tp = fz ? 0 : lk.tp, ke = RM ? 1 : 1 - Math.exp(-dt / .14);
       if (Math.abs(ty - lk.yaw) > 1e-4 || Math.abs(tp - lk.pitch) > 1e-4) { lk.yaw += (ty - lk.yaw) * ke; lk.pitch += (tp - lk.pitch) * ke; dirty = true; } }
-    stepTick(t);
     if (dirty && !covered) { render(); dirty = false; }
   }
   requestAnimationFrame(frame);
@@ -1867,47 +1864,6 @@ function closeP(el) { el.classList.remove("on"); setTimeout(() => { if (!el.clas
 jsEl.addEventListener("click", e => { if (e.target === jsEl) closeP(jsEl); });
 $("#jsX").addEventListener("click", () => closeP(jsEl)); $("#jsGo").addEventListener("click", () => setTimeout(() => closeP(jsEl), 150));
 $("#jsRoom").addEventListener("click", () => { closeP(jsEl); setTimeout(() => focusDoor(enterDoor), 250); });
-
-/* ================= SUARA LANGKAH ================= */
-const snd = { on: true, ac: null, noise: null, master: null, acc: .6, last: 0, side: 1, prev: null }, sndBtn = $("#sndBtn");
-try { snd.on = localStorage.getItem("umfest-snd") !== "0"; } catch (er) {}
-if (!(window.AudioContext || window.webkitAudioContext)) sndBtn.hidden = true;
-function sndUI() { sndBtn.classList.toggle("off", !snd.on); sndBtn.setAttribute("aria-pressed", String(snd.on)); sndBtn.setAttribute("aria-label", snd.on ? "Matikan suara langkah" : "Nyalakan suara langkah"); }
-sndUI();
-function audioUnlock() {
-  if (!snd.on) return;
-  if (snd.ac) { if (snd.ac.state === "suspended") snd.ac.resume(); return; }
-  const AC = window.AudioContext || window.webkitAudioContext; if (!AC) return;
-  try { snd.ac = new AC(); buildFoot(snd.ac, snd); } catch (er) { snd.ac = null; }
-}
-function buildFoot(ac, o) {
-  const sr = ac.sampleRate, n = (sr * .5) | 0, pk = ac.createBuffer(1, n, sr), d = pk.getChannelData(0);
-  let b0 = 0, b1 = 0, b2 = 0, b3 = 0, b4 = 0, b5 = 0, b6 = 0;
-  for (let i = 0; i < n; i++) { const w = Math.random() * 2 - 1; b0 = .99886 * b0 + w * .0555179; b1 = .99332 * b1 + w * .0750759; b2 = .969 * b2 + w * .153852; b3 = .8665 * b3 + w * .3104856; b4 = .55 * b4 + w * .5329522; b5 = -.7616 * b5 - w * .016898; d[i] = (b0 + b1 + b2 + b3 + b4 + b5 + b6 + w * .5362) * .11; b6 = w * .115926; }
-  o.master = ac.createGain(); o.master.gain.value = 1.1; o.master.connect(ac.destination); o.noise = pk;
-}
-function footstep(ac0, o0, at) {
-  const ac = ac0 || snd.ac, o = o0 || snd; if (!ac || (!ac0 && ac.state !== "running")) return;
-  const t = (at != null ? at : ac.currentTime + .02), side = (o.side = -(o.side || 1)), v = .85 + Math.random() * .3;
-  let out = o.master; if (ac.createStereoPanner) { const pn = ac.createStereoPanner(); pn.pan.value = side * .06; pn.connect(o.master); out = pn; }
-  const puff = (dt, lo, hi, gain, att, dec) => {
-    const sb = ac.createBufferSource(), lp = ac.createBiquadFilter(), hp = ac.createBiquadFilter(), g = ac.createGain();
-    sb.buffer = o.noise; lp.type = "lowpass"; lp.frequency.value = hi; lp.Q.value = .3; hp.type = "highpass"; hp.frequency.value = lo; hp.Q.value = .3;
-    g.gain.setValueAtTime(0, t + dt); g.gain.linearRampToValueAtTime(gain * v, t + dt + att); g.gain.setTargetAtTime(0, t + dt + att, dec);
-    sb.connect(hp); hp.connect(lp); lp.connect(g); g.connect(out); sb.start(t + dt, Math.random() * .3, .4);
-  };
-  puff(0, 90, 700 + Math.random() * 150, .9, .03, .045);
-  puff(.11, 140, 1000 + Math.random() * 200, .45, .035, .05);
-  puff(-.03, 600, 2200, .06, .05, .05);
-}
-["pointerdown", "keydown", "wheel", "touchstart"].forEach(ev => addEventListener(ev, audioUnlock, { passive: true }));
-function stepTick(t) {
-  if (!snd.on || !snd.ac || covered) { snd.prev = null; return; }
-  const ex = pose.r * Math.cos(pose.th), ez = pose.r * Math.sin(pose.th);
-  if (snd.prev) { const d = Math.hypot(ex - snd.prev[0], ez - snd.prev[1]); if (d > .0006) { snd.acc += d; if (snd.acc > .9 && t - snd.last > 300) { snd.acc = 0; snd.last = t; footstep(); } } else snd.acc = Math.max(snd.acc, .6); }
-  snd.prev = [ex, ez];
-}
-sndBtn.addEventListener("click", () => { snd.on = !snd.on; try { localStorage.setItem("umfest-snd", snd.on ? "1" : "0"); } catch (er) {} sndUI(); if (snd.on) { audioUnlock(); snd.acc = .6; footstep(); } });
 
 /* ================= NOTIFIKASI KREDIT ================= */
 const crEl = $("#crPop");
